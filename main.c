@@ -9,8 +9,9 @@ bool init();
 //Loads media
 bool loadMedia();
 
-//Frees media and shuts down SDL
-void close();
+/* Frees media and shuts down SDL
+We need to name it closeV2 because there is already a close function in SDL */
+void closeV2();
 
 App game;
 
@@ -30,7 +31,7 @@ bool init() {
     else
     {
         //Create window
-        game.window = SDL_CreateWindow( "SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_SHOWN );
+        game.window = SDL_CreateWindow( "Checkers", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_SHOWN );
         if( game.window == NULL )
         {
             printf( "Window could not be created! SDL_Error: %s\n", SDL_GetError() );
@@ -59,11 +60,12 @@ bool loadMedia(SDL_Surface *img, char path[]) {
         success = false;
     }
 
+    printf("Loaded %s\n", path);
     return success;
 }
 
 
-void close() {
+void closeV2() {
     //Deallocate surface
     SDL_FreeSurface( imgWhitePiece );
     imgWhitePiece = NULL;
@@ -89,23 +91,18 @@ int main(int argc, char* argv[]) {
         printf("Failed to initialize!\n");
     } else {
         //Load media
-        if( !loadMedia(imgWhitePiece, "whitePiece.bmp") )
-        {
-            printf( "Failed to load media!\n" );
+        if(!loadMedia(imgWhitePiece, PATH_TO_IMAGES"whitePiece.bmp") || !loadMedia(imgBlackPiece, PATH_TO_IMAGES"blackPiece.bmp")){
+            fprintf(stderr, "Failed to load media!\n");
         } else {
-            printf("Media loaded\n");
-
             // Update the window
             SDL_UpdateWindowSurface(game.window);
 
             //Hack to get window to stay up
             SDL_Event e; bool quit = false; while( quit == false ){ while( SDL_PollEvent( &e ) ){ if( e.type == SDL_QUIT ) quit = true; } }
-
-            close();
         }
     }
 
-
+    closeV2();
 
     return 0;
 }

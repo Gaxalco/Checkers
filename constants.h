@@ -3,6 +3,8 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
+#define PATH_TO_IMAGES "assets/images/"
+
 #define WINDOW_WIDTH 1500
 #define WINDOW_HEIGHT 1500
 
