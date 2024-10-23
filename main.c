@@ -1,40 +1,45 @@
 #include "constants.h"
 
 
-/* gcc main.c -g -o main -Wall -std=c99 -lSDL2 ; ./main */
-
+/* gcc main.c -o main -Wall -std=c99 -lSDL2 ; ./main */
 
 //Starts up SDL and creates window
 bool init();
 
 //Loads media
-bool loadMedia() {
-    // Placeholder function, returns true for now
-    return true;
-}
+bool loadMedia();
 
 //Frees media and shuts down SDL
-void close2();
+void close();
 
-App game = {NULL, NULL};
+App game;
+
+SDL_Surface *imgWhitePiece = NULL;
+SDL_Surface *imgBlackPiece = NULL;
 
 bool init() {
     //Initialization flag
     bool success = true;
 
     //Initialize SDL
-    if( SDL_Init( SDL_INIT_VIDEO ) < 0 ) {
+    if( SDL_Init( SDL_INIT_VIDEO ) < 0 )
+    {
         printf( "SDL could not initialize! SDL_Error: %s\n", SDL_GetError() );
         success = false;
-    } else {
+    }
+    else
+    {
         //Create window
-        game.window = SDL_CreateWindow("Checkers", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_SHOWN);
-        if (game.window == NULL) {
-            printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
+        game.window = SDL_CreateWindow( "SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_SHOWN );
+        if( game.window == NULL )
+        {
+            printf( "Window could not be created! SDL_Error: %s\n", SDL_GetError() );
             success = false;
-        } else {
+        }
+        else
+        {
             //Get window surface
-            game.screen = SDL_GetWindowSurface(game.window);
+            game.screen = SDL_GetWindowSurface( game.window );
         }
     }
 
@@ -42,43 +47,65 @@ bool init() {
 }
 
 
+bool loadMedia(SDL_Surface *img, char path[]) {
+    //Loading success flag
+    bool success = true;
 
-void close2() {
-    //Deallocate surface
-    if (game.screen != NULL) {
-        SDL_FreeSurface(game.screen);
-        game.screen = NULL;
+    //Load splash image
+    img = SDL_LoadBMP( path );
+    if( img == NULL )
+    {
+        printf( "Unable to load image %s! SDL Error: %s\n", path, SDL_GetError() );
+        success = false;
     }
+
+    return success;
+}
+
+
+void close() {
+    //Deallocate surface
+    SDL_FreeSurface( imgWhitePiece );
+    imgWhitePiece = NULL;
+
+    SDL_FreeSurface( imgBlackPiece );
+    imgBlackPiece = NULL;
 
     //Destroy window
-    if (game.window != NULL) {
-        SDL_DestroyWindow(game.window);
-        game.window = NULL;
-    }
+    SDL_DestroyWindow( game.window );
+    game.window = NULL;
+
+    //Message to console
+    printf("Game closed\n");
 
     //Quit SDL subsystems
     SDL_Quit();
 }
 
 
-
 int main(int argc, char* argv[]) {
-    
-    if (!init()) {
-        printf("SDL_Init Error: %s\n", SDL_GetError());
-        return 1;
+
+    if (init() == false) {
+        printf("Failed to initialize!\n");
     } else {
-        //Fill the screen white
-        SDL_FillRect(game.screen, NULL, SDL_MapRGB(game.screen->format, 0xFF, 0xFF, 0xFF));
+        //Load media
+        if( !loadMedia(imgWhitePiece, "whitePiece.bmp") )
+        {
+            printf( "Failed to load media!\n" );
+        } else {
+            printf("Media loaded\n");
 
-        // Update the window
-        SDL_UpdateWindowSurface(game.window);
+            // Update the window
+            SDL_UpdateWindowSurface(game.window);
 
-        //Hack to get window to stay up
-        SDL_Event e; bool quit = false; while( quit == false ){ while( SDL_PollEvent( &e ) ){ if( e.type == SDL_QUIT ) quit = true; } }
+            //Hack to get window to stay up
+            SDL_Event e; bool quit = false; while( quit == false ){ while( SDL_PollEvent( &e ) ){ if( e.type == SDL_QUIT ) quit = true; } }
+
+            close();
+        }
     }
 
-    close();
+
 
     return 0;
 }
