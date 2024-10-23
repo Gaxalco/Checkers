@@ -68,14 +68,14 @@ int main(int argc, char* argv[]) {
         printf("SDL_Init Error: %s\n", SDL_GetError());
         return 1;
     } else {
-        // Fill the screen white
-        // SDL_FillRect(game.screen, NULL, SDL_MapRGB(game.screen->format, 0xFF, 0xFF, 0xFF));
+        //Fill the screen white
+        SDL_FillRect(game.screen, NULL, SDL_MapRGB(game.screen->format, 0xFF, 0xFF, 0xFF));
 
-        // // Update the window
-        // SDL_UpdateWindowSurface(game.window);
+        // Update the window
+        SDL_UpdateWindowSurface(game.window);
 
-        // //Hack to get window to stay up
-        // SDL_Event e; bool quit = false; while( quit == false ){ while( SDL_PollEvent( &e ) ){ if( e.type == SDL_QUIT ) quit = true; } }
+        //Hack to get window to stay up
+        SDL_Event e; bool quit = false; while( quit == false ){ while( SDL_PollEvent( &e ) ){ if( e.type == SDL_QUIT ) quit = true; } }
     }
 
         
