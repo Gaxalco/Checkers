@@ -14,7 +14,7 @@ bool loadMedia() {
 }
 
 //Frees media and shuts down SDL
-void close();
+void close2();
 
 App game = {NULL, NULL};
 
@@ -43,7 +43,7 @@ bool init() {
 
 
 
-void close() {
+void close2() {
     //Deallocate surface
     if (game.screen != NULL) {
         SDL_FreeSurface(game.screen);
@@ -78,7 +78,7 @@ int main(int argc, char* argv[]) {
         SDL_Event e; bool quit = false; while( quit == false ){ while( SDL_PollEvent( &e ) ){ if( e.type == SDL_QUIT ) quit = true; } }
     }
 
-        
+    close();
 
     return 0;
 }
