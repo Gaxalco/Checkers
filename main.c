@@ -7,7 +7,7 @@
 bool init();
 
 //Loads media
-bool loadMedia();
+bool loadMedia(SDL_Surface *img, char path[]);
 
 /* Frees media and shuts down SDL
 We need to name it closeV2 because there is already a close function in SDL */
@@ -32,13 +32,10 @@ bool init() {
     {
         //Create window
         game.window = SDL_CreateWindow( "Checkers", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_SHOWN );
-        if( game.window == NULL )
-        {
+        if( game.window == NULL ) {
             printf( "Window could not be created! SDL_Error: %s\n", SDL_GetError() );
             success = false;
-        }
-        else
-        {
+        } else {
             //Get window surface
             game.screen = SDL_GetWindowSurface( game.window );
         }
@@ -54,13 +51,13 @@ bool loadMedia(SDL_Surface *img, char path[]) {
 
     //Load splash image
     img = SDL_LoadBMP( path );
-    if( img == NULL )
-    {
+    if( img == NULL ) {
         printf( "Unable to load image %s! SDL Error: %s\n", path, SDL_GetError() );
         success = false;
+    } else{
+        printf("Loaded %s\n", path);
     }
-
-    printf("Loaded %s\n", path);
+    
     return success;
 }
 
@@ -95,11 +92,24 @@ int main(int argc, char* argv[]) {
             printf("Failed to load media!\n");
         } else {
             //Fill the surface white
-            SDL_FillRect( game.screen, NULL, SDL_MapRGB( game.screen->format, 0xFF, 0xFF, 0xFF ) );
+            // Fill the surface with a wooden chess board pattern
+            int tileSize = 100; // Size of each tile
+            Uint32 lightBrown = SDL_MapRGB(game.screen->format, 0xD2, 0xB4, 0x8C);
+            Uint32 darkBrown = SDL_MapRGB(game.screen->format, 0x8B, 0x45, 0x13);
+
+            for (int y = 0; y < WINDOW_HEIGHT; y += tileSize) {
+                for (int x = 0; x < WINDOW_WIDTH; x += tileSize) {
+                    SDL_Rect tile = { x, y, tileSize, tileSize };
+                    if ((x / tileSize + y / tileSize) % 2 == 0) {
+                        SDL_FillRect(game.screen, &tile, lightBrown);
+                    } else {
+                        SDL_FillRect(game.screen, &tile, darkBrown);
+                    }
+                }
+            }
 
             //Apply the images
             SDL_BlitSurface(imgWhitePiece, NULL, game.screen, NULL);
-            SDL_BlitSurface(imgBlackPiece, NULL, game.screen, NULL);
 
             //Update the surface
             SDL_UpdateWindowSurface(game.window);
@@ -108,6 +118,8 @@ int main(int argc, char* argv[]) {
             SDL_Event e; bool quit = false; while( quit == false ){ while( SDL_PollEvent( &e ) ){ if( e.type == SDL_QUIT ) quit = true; } }
         }
     }
+
+    printf("Closing game\n");
 
     closeV2();
 

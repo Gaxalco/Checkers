@@ -5,8 +5,8 @@
 
 #define PATH_TO_IMAGES "assets/images/"
 
-#define WINDOW_WIDTH 1500
-#define WINDOW_HEIGHT 1500
+#define WINDOW_WIDTH 800
+#define WINDOW_HEIGHT 800
 
 #define PLAYER_WHITE -1
 #define PLAYER_BLACK 1
