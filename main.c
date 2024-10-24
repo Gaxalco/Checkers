@@ -92,9 +92,16 @@ int main(int argc, char* argv[]) {
     } else {
         //Load media
         if(!loadMedia(imgWhitePiece, PATH_TO_IMAGES"whitePiece.bmp") || !loadMedia(imgBlackPiece, PATH_TO_IMAGES"blackPiece.bmp")){
-            fprintf(stderr, "Failed to load media!\n");
+            printf("Failed to load media!\n");
         } else {
-            // Update the window
+            //Fill the surface white
+            SDL_FillRect( game.screen, NULL, SDL_MapRGB( game.screen->format, 0xFF, 0xFF, 0xFF ) );
+
+            //Apply the images
+            SDL_BlitSurface(imgWhitePiece, NULL, game.screen, NULL);
+            SDL_BlitSurface(imgBlackPiece, NULL, game.screen, NULL);
+
+            //Update the surface
             SDL_UpdateWindowSurface(game.window);
 
             //Hack to get window to stay up
